@@ -25,9 +25,9 @@ class ProductItem extends Component {
 
   render() {
     const { classes, product } = this.props;
-
-    const PUBLIC_URL = process.env.PUBLIC_URL
-      ? process.env.PUBLIC_URL
+    const prodbuild = true;
+    const PUBLIC_URL = prodbuild
+      ? "https://toddw-boot19-shop.firebaseapp.com"
       : "http://localhost:3000";
     return (
       <div>
