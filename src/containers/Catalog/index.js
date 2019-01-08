@@ -1,25 +1,41 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
-export default class Catalog extends Component {
+import ProductItem from "../ProductItem";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+const styles = theme => ({
+  root: {
+    flexGrow: 1
+  }
+});
+class Catalog extends Component {
   static propTypes = {
     products: PropTypes.array
   };
 
   render() {
+    const { products, classes } = this.props;
+
     const listItems =
-      this.props.products && this.props.products.length > 0 ? (
-        this.props.products.map(item => <li key={item.id}>{item.title} </li>)
+      products && products.length > 0 ? (
+        products.map(product => (
+          <Grid item xs={4} key={product.id}>
+            <ProductItem product={product} />
+          </Grid>
+        ))
       ) : (
         <li>
           <i>No Products</i>
         </li>
       );
     return (
-      <div>
-        <h1>Catalog</h1>
-        <ul>{listItems}</ul>
+      <div className={classes.root}>
+        <h1>Products</h1>
+        <Grid container spacing={24}>
+          {listItems}
+        </Grid>
       </div>
     );
   }
 }
+export default withStyles(styles)(Catalog);
