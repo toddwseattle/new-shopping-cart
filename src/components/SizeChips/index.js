@@ -19,7 +19,7 @@ function SizeChips(props) {
   const { sizes, classes } = props;
 
   const SizeChips = sizes.map(size => (
-    <Chip label={size} color="primary" className={classes.chip} />
+    <Chip key={size} label={size} color="primary" className={classes.chip} />
   ));
   return (
     <Paper className={classes.paper}>

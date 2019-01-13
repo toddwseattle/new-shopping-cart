@@ -10,17 +10,18 @@ const styles = theme => ({
 });
 class Catalog extends Component {
   static propTypes = {
-    products: PropTypes.array
+    products: PropTypes.array,
+    addToCart: PropTypes.func
   };
 
   render() {
-    const { products, classes } = this.props;
+    const { products, classes, addToCart } = this.props;
 
     const listItems =
       products && products.length > 0 ? (
         products.map(product => (
           <Grid item xs={4} key={product.id}>
-            <ProductItem product={product} />
+            <ProductItem product={product} addToCart={addToCart} />
           </Grid>
         ))
       ) : (
