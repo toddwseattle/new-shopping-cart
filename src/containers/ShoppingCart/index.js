@@ -29,19 +29,35 @@ class ShoppingCart extends Component {
 
   render() {
     const { cart, classes } = this.props;
-    const cartList = cart.map((cartItem, index) => (
-      <TableRow key={cartItem.id}>
+    let totalQuantity = 0;
+    let totalCost = 0;
+    const cartList = cart.map((cartItem, index) => {
+      totalCost += cartItem.cost;
+      totalQuantity += cartItem.quantity;
+      return (
+        <TableRow key={cartItem.id}>
+          <TableCell component="th" scope="row">
+            {cartItem.product.title}
+          </TableCell>
+          <TableCell align="right">{cartItem.quantity}</TableCell>
+          <TableCell align="right">
+            {cartItem.product.currencyFormat}
+            {cartItem.product.price.toFixed(2)}
+          </TableCell>
+          <TableCell align="right">{cartItem.cost.toFixed(2)}</TableCell>
+        </TableRow>
+      );
+    });
+    const totalLine = (
+      <TableRow key={"Total"}>
         <TableCell component="th" scope="row">
-          {cartItem.product.title}
+          Total
         </TableCell>
-        <TableCell align="right">{cartItem.quantity}</TableCell>
-        <TableCell align="right">
-          {cartItem.product.currencyFormat}
-          {cartItem.product.price.toFixed(2)}
-        </TableCell>
-        <TableCell align="right">{cartItem.cost.toFixed(2)}</TableCell>
+        <TableCell align="right">{totalQuantity}</TableCell>
+        <TableCell align="right" />
+        <TableCell align="right">{totalCost.toFixed(2)}</TableCell>
       </TableRow>
-    ));
+    );
     return (
       <div>
         <Paper className={classes.root}>
@@ -54,7 +70,10 @@ class ShoppingCart extends Component {
                 <TableCell align="right">Cost</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>{cartList}</TableBody>
+            <TableBody>
+              {cartList}
+              {totalLine}
+            </TableBody>
           </Table>
         </Paper>
         <CloseCart setIsCartOpen={this.props.setIsCartOpen} />

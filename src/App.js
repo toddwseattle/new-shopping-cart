@@ -4,6 +4,16 @@ import Catalog from "./containers/Catalog";
 import { Grid } from "@material-ui/core";
 import ActivateCart from "./components/ActivateCart";
 import ShoppingCart from "./containers/ShoppingCart";
+import Navigation from "./components/Navigation";
+import LandingPage from "./components/Landing";
+import SignInPage from "./components/SignIn";
+import SignUpPage from "./components/SignUp";
+import PasswordForgetPage from "./components/PasswordForget";
+import AdminPage from "./components/Admin";
+import HomePage from "./components/Home";
+import AccountPage from "./components/Account";
+import * as ROUTES from "./constants/routes";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 class App extends Component {
   constructor(props) {
@@ -53,29 +63,42 @@ class App extends Component {
   render() {
     const { cartIsOpen, products, cart } = this.state;
     return (
-      <div>
-        <Grid container spacing={24}>
-          <Grid item xs={cartIsOpen ? 8 : 11}>
-            <Catalog products={products} addToCart={this.addToCart} />
+      <Router>
+        <div>
+          <Navigation />
+
+          <hr />
+
+          <Route exact path={ROUTES.LANDING} component={LandingPage} />
+          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
+          <Route path={ROUTES.HOME} component={HomePage} />
+          <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+          <Route path={ROUTES.ADMIN} component={AdminPage} />
+          <Grid container spacing={24}>
+            <Grid item xs={cartIsOpen ? 8 : 11}>
+              <Catalog products={products} addToCart={this.addToCart} />
+            </Grid>
+            {cartIsOpen ? (
+              <Grid item xs={4}>
+                <ShoppingCart
+                  setIsCartOpen={this.setIsCartOpen}
+                  cart={cart}
+                  updateCart={this.updateCart}
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={1}>
+                <ActivateCart
+                  setIsCartOpen={this.setIsCartOpen}
+                  cartItems={cart.length}
+                />
+              </Grid>
+            )}
           </Grid>
-          {cartIsOpen ? (
-            <Grid item xs={4}>
-              <ShoppingCart
-                setIsCartOpen={this.setIsCartOpen}
-                cart={cart}
-                updateCart={this.updateCart}
-              />
-            </Grid>
-          ) : (
-            <Grid item xs={1}>
-              <ActivateCart
-                setIsCartOpen={this.setIsCartOpen}
-                cartItems={cart.length}
-              />
-            </Grid>
-          )}
-        </Grid>
-      </div>
+        </div>
+      </Router>
     );
   }
 }
