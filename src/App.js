@@ -12,7 +12,7 @@ import HomePage from "./components/Home";
 import AccountPage from "./components/Account";
 import * as ROUTES from "./constants/routes";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-
+import { withAuthentication } from "./components/Session";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -24,8 +24,16 @@ class App extends Component {
     this.state = {
       products: [],
       cartIsOpen: false,
-      cart: []
+      cart: [],
+      authUser: null
     };
+  }
+  componentDidMount() {
+    this.authlistner = this.props.firebase.auth.onAuthStateChanged(authUser => {
+      authUser
+        ? this.setState({ authUser })
+        : this.setState({ authUser: null });
+    });
   }
   setIsCartOpen = () => {
     this.setState({ cartIsOpen: !this.state.cartIsOpen });
@@ -59,18 +67,19 @@ class App extends Component {
     this.setState({ cart: newCart });
   };
   render() {
-    const { cartIsOpen, products, cart } = this.state;
+    const { cartIsOpen, products, cart, authUser } = this.state;
     return (
       <Router>
         <div>
           <Navigation
             setIsCartOpen={this.setIsCartOpen}
             cartItems={cart.length}
+            authUser={authUser}
           />
           <hr />
 
           <Grid container spacing={24}>
-            <Grid item xs={cartIsOpen ? 8 : 11}>
+            <Grid item xs={cartIsOpen ? 8 : 12}>
               <Route
                 exact
                 path={ROUTES.LANDING}
@@ -106,4 +115,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withAuthentication(App);

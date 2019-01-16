@@ -6,12 +6,14 @@ import { Link, withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import Button from "@material-ui/core/Button";
 import ActivateCart from "../ActivateCart";
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
@@ -57,7 +59,10 @@ class Navigation extends Component {
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
-
+  handleSignInClick = event => {
+    const { history } = this.props;
+    history.push(ROUTES.SIGN_IN);
+  };
   handleAuthMenuClose = event => {
     const { history } = this.props;
     const { authMenu } = this.state;
@@ -79,8 +84,8 @@ class Navigation extends Component {
     ));
   }
   render() {
-    const { classes, cartItems, setIsCartOpen } = this.props;
-    const { auth, anchorEl, authMenu } = this.state;
+    const { classes, cartItems, setIsCartOpen, authUser } = this.props;
+    const { anchorEl, authMenu } = this.state;
     const open = Boolean(anchorEl);
 
     return (
@@ -108,16 +113,22 @@ class Navigation extends Component {
               setIsCartOpen={setIsCartOpen}
               cartItems={cartItems}
             />
-            {auth && (
+            {authUser ? (
               <div>
-                <IconButton
-                  aria-owns={open ? "menu-appbar" : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
+                <Tooltip
+                  title={
+                    authUser.displayname ? authUser.displayname : authUser.email
+                  }
                 >
-                  <AccountCircle />
-                </IconButton>
+                  <IconButton
+                    aria-owns={open ? "menu-appbar" : undefined}
+                    aria-haspopup="true"
+                    onClick={this.handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </Tooltip>
                 <Menu
                   id="menu-appbar"
                   anchorEl={anchorEl}
@@ -135,6 +146,14 @@ class Navigation extends Component {
                   {this.buildMenu(authMenu, this.handleAuthMenuClose)};
                 </Menu>
               </div>
+            ) : (
+              <Button
+                name="signin"
+                id="signin"
+                onClick={this.handleSignInClick}
+              >
+                Sign In
+              </Button>
             )}
           </Toolbar>
         </AppBar>
@@ -145,7 +164,8 @@ class Navigation extends Component {
 
 Navigation.propTypes = {
   setIsCartOpen: PropTypes.func.isRequired,
-  cartItems: PropTypes.number.isRequired
+  cartItems: PropTypes.number.isRequired,
+  authUser: PropTypes.object.isRequired
 };
 
 export default compose(
