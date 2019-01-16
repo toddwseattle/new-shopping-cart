@@ -53,6 +53,7 @@ class Navigation extends Component {
         break;
       case "admin":
         history.push(ROUTES.ADMIN);
+        break;
       default:
         break;
     }
