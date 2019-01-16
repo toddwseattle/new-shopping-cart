@@ -17,6 +17,7 @@ import Button from "@material-ui/core/Button";
 import ActivateCart from "../ActivateCart";
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
+import { AuthUserContext } from "../Session";
 const styles = {
   root: {
     flexGrow: 1
@@ -84,7 +85,7 @@ class Navigation extends Component {
     ));
   }
   render() {
-    const { classes, cartItems, setIsCartOpen, authUser } = this.props;
+    const { classes, cartItems, setIsCartOpen } = this.props;
     const { anchorEl, authMenu } = this.state;
     const open = Boolean(anchorEl);
 
@@ -113,48 +114,54 @@ class Navigation extends Component {
               setIsCartOpen={setIsCartOpen}
               cartItems={cartItems}
             />
-            {authUser ? (
-              <div>
-                <Tooltip
-                  title={
-                    authUser.displayname ? authUser.displayname : authUser.email
-                  }
-                >
-                  <IconButton
-                    aria-owns={open ? "menu-appbar" : undefined}
-                    aria-haspopup="true"
-                    onClick={this.handleMenu}
-                    color="inherit"
+            <AuthUserContext.Consumer>
+              {authUser =>
+                authUser ? (
+                  <div>
+                    <Tooltip
+                      title={
+                        authUser.displayname
+                          ? authUser.displayname
+                          : authUser.email
+                      }
+                    >
+                      <IconButton
+                        aria-owns={open ? "menu-appbar" : undefined}
+                        aria-haspopup="true"
+                        onClick={this.handleMenu}
+                        color="inherit"
+                      >
+                        <AccountCircle />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      id="menu-appbar"
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right"
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right"
+                      }}
+                      open={open}
+                      onClose={this.handleAuthMenuClose}
+                    >
+                      {this.buildMenu(authMenu, this.handleAuthMenuClose)};
+                    </Menu>
+                  </div>
+                ) : (
+                  <Button
+                    name="signin"
+                    id="signin"
+                    onClick={this.handleSignInClick}
                   >
-                    <AccountCircle />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right"
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right"
-                  }}
-                  open={open}
-                  onClose={this.handleAuthMenuClose}
-                >
-                  {this.buildMenu(authMenu, this.handleAuthMenuClose)};
-                </Menu>
-              </div>
-            ) : (
-              <Button
-                name="signin"
-                id="signin"
-                onClick={this.handleSignInClick}
-              >
-                Sign In
-              </Button>
-            )}
+                    Sign In
+                  </Button>
+                )
+              }
+            </AuthUserContext.Consumer>
           </Toolbar>
         </AppBar>
       </div>
@@ -164,8 +171,7 @@ class Navigation extends Component {
 
 Navigation.propTypes = {
   setIsCartOpen: PropTypes.func.isRequired,
-  cartItems: PropTypes.number.isRequired,
-  authUser: PropTypes.object.isRequired
+  cartItems: PropTypes.number.isRequired
 };
 
 export default compose(

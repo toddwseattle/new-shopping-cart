@@ -13,7 +13,7 @@ import AccountPage from "./components/Account";
 import * as ROUTES from "./constants/routes";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { withAuthentication } from "./components/Session";
-class App extends Component {
+class MyApp extends Component {
   constructor(props) {
     super(props);
     import("./static/data/products.json").then(json => {
@@ -28,13 +28,7 @@ class App extends Component {
       authUser: null
     };
   }
-  componentDidMount() {
-    this.authlistner = this.props.firebase.auth.onAuthStateChanged(authUser => {
-      authUser
-        ? this.setState({ authUser })
-        : this.setState({ authUser: null });
-    });
-  }
+
   setIsCartOpen = () => {
     this.setState({ cartIsOpen: !this.state.cartIsOpen });
   };
@@ -67,14 +61,13 @@ class App extends Component {
     this.setState({ cart: newCart });
   };
   render() {
-    const { cartIsOpen, products, cart, authUser } = this.state;
+    const { cartIsOpen, products, cart } = this.state;
     return (
       <Router>
         <div>
           <Navigation
             setIsCartOpen={this.setIsCartOpen}
             cartItems={cart.length}
-            authUser={authUser}
           />
           <hr />
 
@@ -115,4 +108,4 @@ class App extends Component {
   }
 }
 
-export default withAuthentication(App);
+export default withAuthentication(MyApp);
