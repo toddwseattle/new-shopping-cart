@@ -123,7 +123,7 @@ class SignInFormBase extends Component {
               color="primary"
               className={classes.submit}
             >
-              Sign Up
+              Sign In
             </Button>
             {error && <p>{error.message}</p>}
           </form>

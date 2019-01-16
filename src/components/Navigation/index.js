@@ -14,6 +14,7 @@ import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import ActivateCart from "../ActivateCart";
 import { compose } from "recompose";
+import { withFirebase } from "../Firebase";
 const styles = {
   root: {
     flexGrow: 1
@@ -28,9 +29,25 @@ const styles = {
 };
 
 class Navigation extends Component {
+  signOut = event => {
+    const { firebase } = this.props;
+    firebase.doSignOut();
+    console.log("Signout!");
+  };
+
   state = {
     auth: true,
-    anchorEl: null
+    anchorEl: null,
+    authMenu: {
+      signin: { description: "Sign In", route: ROUTES.SIGN_IN, onClick: null },
+      account: { description: "Account", route: ROUTES.ACCOUNT, onClick: null },
+      admin: { description: "Admin", route: ROUTES.ADMIN, onClick: null },
+      signout: {
+        description: "Sign Out",
+        route: ROUTES.LANDING,
+        onClick: this.signOut
+      }
+    }
   };
 
   handleChange = event => {
@@ -41,27 +58,29 @@ class Navigation extends Component {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = event => {
+  handleAuthMenuClose = event => {
     const { history } = this.props;
+    const { authMenu } = this.state;
     this.setState({ anchorEl: null });
-    switch (event.target.id) {
-      case "signin":
-        history.push(ROUTES.SIGN_IN);
-        break;
-      case "account":
-        history.push(ROUTES.ACCOUNT);
-        break;
-      case "admin":
-        history.push(ROUTES.ADMIN);
-        break;
-      default:
-        break;
+    const currentItem = authMenu[event.target.id];
+    if (currentItem && currentItem.onClick) {
+      currentItem.onClick(event);
+    }
+    if (currentItem && currentItem.route) {
+      history.push(currentItem.route);
     }
   };
-
+  buildMenu(menu, onclick) {
+    const nameArray = Object.keys(menu);
+    return nameArray.map(menuItem => (
+      <MenuItem id={menuItem} key={menuItem} onClick={onclick}>
+        {menu[menuItem].description}
+      </MenuItem>
+    ));
+  }
   render() {
     const { classes, cartItems, setIsCartOpen } = this.props;
-    const { auth, anchorEl } = this.state;
+    const { auth, anchorEl, authMenu } = this.state;
     const open = Boolean(anchorEl);
 
     return (
@@ -69,16 +88,26 @@ class Navigation extends Component {
         <AppBar position="static">
           <Toolbar>
             <IconButton
+              id="menu-icon"
               className={classes.menuButton}
               color="inherit"
               aria-label="Menu"
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
+            <Typography
+              id="shop-shirts"
+              variant="h6"
+              color="inherit"
+              className={classes.grow}
+            >
               <Link to={ROUTES.LANDING}>Shop Shirts</Link>
             </Typography>
-            <ActivateCart setIsCartOpen={setIsCartOpen} cartItems={cartItems} />
+            <ActivateCart
+              id="cart"
+              setIsCartOpen={setIsCartOpen}
+              cartItems={cartItems}
+            />
             {auth && (
               <div>
                 <IconButton
@@ -101,17 +130,9 @@ class Navigation extends Component {
                     horizontal: "right"
                   }}
                   open={open}
-                  onClose={this.handleClose}
+                  onClose={this.handleAuthMenuClose}
                 >
-                  <MenuItem id="signin" onClick={this.handleClose}>
-                    Sign in
-                  </MenuItem>
-                  <MenuItem id="account" onClick={this.handleClose}>
-                    My account
-                  </MenuItem>
-                  <MenuItem id="admin" onClick={this.handleClose}>
-                    Admin
-                  </MenuItem>
+                  {this.buildMenu(authMenu, this.handleAuthMenuClose)};
                 </Menu>
               </div>
             )}
@@ -129,5 +150,6 @@ Navigation.propTypes = {
 
 export default compose(
   withStyles(styles),
-  withRouter
+  withRouter,
+  withFirebase
 )(Navigation);
