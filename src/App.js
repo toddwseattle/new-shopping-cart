@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import Catalog from "./containers/Catalog";
 import { Grid } from "@material-ui/core";
-import ActivateCart from "./components/ActivateCart";
 import ShoppingCart from "./containers/ShoppingCart";
 import Navigation from "./components/Navigation";
 import LandingPage from "./components/Landing";
@@ -65,20 +63,30 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <Navigation />
-
+          <Navigation
+            setIsCartOpen={this.setIsCartOpen}
+            cartItems={cart.length}
+          />
           <hr />
 
-          <Route exact path={ROUTES.LANDING} component={LandingPage} />
-          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-          <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-          <Route path={ROUTES.HOME} component={HomePage} />
-          <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-          <Route path={ROUTES.ADMIN} component={AdminPage} />
           <Grid container spacing={24}>
             <Grid item xs={cartIsOpen ? 8 : 11}>
-              <Catalog products={products} addToCart={this.addToCart} />
+              <Route
+                exact
+                path={ROUTES.LANDING}
+                component={props => (
+                  <LandingPage products={products} addToCart={this.addToCart} />
+                )}
+              />
+              <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+              <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+              <Route
+                path={ROUTES.PASSWORD_FORGET}
+                component={PasswordForgetPage}
+              />
+              <Route path={ROUTES.HOME} component={HomePage} />
+              <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+              <Route path={ROUTES.ADMIN} component={AdminPage} />
             </Grid>
             {cartIsOpen ? (
               <Grid item xs={4}>
@@ -89,12 +97,7 @@ class App extends Component {
                 />
               </Grid>
             ) : (
-              <Grid item xs={1}>
-                <ActivateCart
-                  setIsCartOpen={this.setIsCartOpen}
-                  cartItems={cart.length}
-                />
-              </Grid>
+              <span />
             )}
           </Grid>
         </div>

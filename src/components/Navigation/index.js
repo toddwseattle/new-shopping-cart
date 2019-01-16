@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import PropTypes from "prop-types";
 import * as ROUTES from "../../constants/routes";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -12,6 +12,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import ActivateCart from "../ActivateCart";
+import { compose } from "recompose";
 const styles = {
   root: {
     flexGrow: 1
@@ -39,34 +41,30 @@ class Navigation extends Component {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = () => {
+  handleClose = event => {
+    const { history } = this.props;
     this.setState({ anchorEl: null });
+    switch (event.target.id) {
+      case "signin":
+        history.push(ROUTES.SIGN_IN);
+        break;
+      case "account":
+        history.push(ROUTES.ACCOUNT);
+        break;
+      case "admin":
+        history.push(ROUTES.ADMIN);
+      default:
+        break;
+    }
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, cartItems, setIsCartOpen } = this.props;
     const { auth, anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
     return (
       <div>
-        <ul>
-          <li>
-            <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-          </li>
-          <li>
-            <Link to={ROUTES.LANDING}>Landing</Link>
-          </li>
-          <li>
-            <Link to={ROUTES.HOME}>Home</Link>
-          </li>
-          <li>
-            <Link to={ROUTES.ACCOUNT}>Account</Link>
-          </li>
-          <li>
-            <Link to={ROUTES.ADMIN}>Admin</Link>
-          </li>
-        </ul>
         <AppBar position="static">
           <Toolbar>
             <IconButton
@@ -77,8 +75,9 @@ class Navigation extends Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" className={classes.grow}>
-              Shop Shirts
+              <Link to={ROUTES.LANDING}>Shop Shirts</Link>
             </Typography>
+            <ActivateCart setIsCartOpen={setIsCartOpen} cartItems={cartItems} />
             {auth && (
               <div>
                 <IconButton
@@ -103,8 +102,15 @@ class Navigation extends Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem id="signin" onClick={this.handleClose}>
+                    Sign in
+                  </MenuItem>
+                  <MenuItem id="account" onClick={this.handleClose}>
+                    My account
+                  </MenuItem>
+                  <MenuItem id="admin" onClick={this.handleClose}>
+                    Admin
+                  </MenuItem>
                 </Menu>
               </div>
             )}
@@ -115,6 +121,12 @@ class Navigation extends Component {
   }
 }
 
-Navigation.propTypes = {};
+Navigation.propTypes = {
+  setIsCartOpen: PropTypes.func.isRequired,
+  cartItems: PropTypes.number.isRequired
+};
 
-export default withStyles(styles)(Navigation);
+export default compose(
+  withStyles(styles),
+  withRouter
+)(Navigation);

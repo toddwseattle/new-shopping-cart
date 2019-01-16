@@ -1,10 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Catalog from "../../containers/Catalog";
 
 function Landing(props) {
-  return <div>Landing</div>;
+  const { products, addToCart } = props;
+  return <Catalog products={products} addToCart={addToCart} />;
 }
 
-Landing.propTypes = {};
+Landing.propTypes = {
+  products: PropTypes.array.isRequired,
+  addToCart: PropTypes.func.isRequired
+};
 
 export default Landing;
