@@ -12,17 +12,27 @@ const withAuthentication = Component => {
         authUser: null
       };
     }
+    updateAuthUser = authUser => {
+      this.setState({ authUser: authUser });
+      this.userlistner = this.props.firebase
+        .user(authUser.uid)
+        .onSnapshot(doc => {
+          const newAuthUser = { ...authUser, ...doc.data() };
+          this.setState({ authUser: newAuthUser });
+        });
+    };
 
     componentDidMount() {
       this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
         authUser
-          ? this.setState({ authUser })
+          ? this.updateAuthUser(authUser)
           : this.setState({ authUser: null });
       });
     }
 
     componentWillUnmount() {
       this.listener();
+      this.userlistner();
     }
 
     render() {

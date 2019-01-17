@@ -13,6 +13,7 @@ import PasswordForgetLink from "../PasswordForget";
 const INITIAL_STATE = {
   email: "",
   password: "",
+  username: "",
   error: null
 };
 

@@ -16,11 +16,11 @@ import { withAuthentication } from "./components/Session";
 class MyApp extends Component {
   constructor(props) {
     super(props);
-    import("./static/data/products.json").then(json => {
+    /* import("./static/data/products.json").then(json => {
       this.setState(state => {
         return { ...state, products: json.products };
       });
-    });
+    }); */
     this.state = {
       products: [],
       cartIsOpen: false,
@@ -29,6 +29,18 @@ class MyApp extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.props.firebase.products().onSnapshot(
+      snapshot => {
+        const productArray = [];
+        snapshot.forEach(doc => productArray.push(doc.data()));
+        this.setState({ products: productArray });
+      },
+      error => {
+        this.console.log(`firebase error ${error}`);
+      }
+    );
+  };
   setIsCartOpen = () => {
     this.setState({ cartIsOpen: !this.state.cartIsOpen });
   };

@@ -2,7 +2,7 @@ import React from "react";
 
 import { PasswordForgetForm } from "../PasswordForget";
 import PasswordChangeForm from "../PasswordChange";
-import { withAuthentication, AuthUserContext } from "../Session";
+import { AuthUserContext } from "../Session";
 
 const AccountPage = props => (
   <div>

@@ -120,9 +120,7 @@ class Navigation extends Component {
                   <div>
                     <Tooltip
                       title={
-                        authUser.displayname
-                          ? authUser.displayname
-                          : authUser.email
+                        authUser.username ? authUser.username : authUser.email
                       }
                     >
                       <IconButton
