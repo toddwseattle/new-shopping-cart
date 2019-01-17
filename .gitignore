@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 # firebase secret
 service-key.json
+# firebase temp files
+.firebase
