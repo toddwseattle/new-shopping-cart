@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  It's my practice implementation of most of things done in the NUvention Web Coding Bootcamp.  A working version is [here hosted](https://toddw-boot19-shop.firebaseapp.com/) on Firebase
 
 ## Available Scripts
 
