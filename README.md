@@ -2,7 +2,8 @@
 This project is an implementation of the shopping cart app, as defined for the first two nights of the NUvention Web coding bootcamp.   The architecture is described inthe [project wiki](https://github.com/toddwseattle/new-shopping-cart/wiki).
 
 
-It was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).   It also uses the firebase CLI.  you can see a version of the deployed application on [Shopping Cart Hosted on Firebase]
+It was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).   It also uses the firebase CLI. 
+It's my practice implementation of most of things done in the NUvention Web Coding Bootcamp.  A working version is [here hosted](https://toddw-boot19-shop.firebaseapp.com/) on Firebase
 
 ## Available Scripts
 
